@@ -2,7 +2,7 @@
 
 ## How to write utxo based CryptoConditions contracts for KMD chains - by jl777
 
-Source text: https://github.com/jl777/komodo/blob/FSM/src/cc/CC%20made%20easy
+Source text: [github.com/jl777/komodo/blob/FSM/src/cc/CC%20made%20easy.md](https://github.com/jl777/komodo/blob/FSM/src/cc/CC%20made%20easy.md)
 
 This is not the only smart contracts methodology that is possible to build on top of `OP_CHECKCRYPTOCONDITION`, just the first one. All the credit for getting `OP_CHECKCRYPTOCONDITION` working in the Komodo codebase goes to @libscott. I am just hooking into the code that he made and tried to make it just a little easier to make new contracts.
 
