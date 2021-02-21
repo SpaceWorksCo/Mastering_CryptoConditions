@@ -1,3 +1,4 @@
+# Mastering CryptoConditions
 
 ## How to write utxo based CryptoConditions contracts for KMD chains - by jl777
 
@@ -79,7 +80,7 @@ Wait, something is wrong! If it was just that, then anybody that found out what 
 OK, I know that just got really confusing. Let us have a more clear example:
 
 ```
-redeemscript <- pay to pubkey 
+redeemscript <- pay to pubkey
 ```
 
 `p2sh` becomes the hash of the redeem script + the compares
@@ -126,7 +127,7 @@ In the [~/komodo/src/cc/eval.h](https://github.com/jl777/komodo/tree/jl777/src/c
         EVAL(EVAL_GATEWAYS, 0xf1)
 ```
 
-Ultimately, we will probably end up with all 256 eval codes used, for now there is plenty of room. I imagined that similar to my coins repo, we can end up with a much larger than 256 number of CC contracts and you select the 256 that you want active for your blockchain. That does mean any specific chain will be limited to "only" having 256 contracts. Since there seems to be so few actually useful contracts so far, this limit seems to be sufficient. I am told that the evalcode can be of any length, but the current CC contracts assumes it is one byte. 
+Ultimately, we will probably end up with all 256 eval codes used, for now there is plenty of room. I imagined that similar to my coins repo, we can end up with a much larger than 256 number of CC contracts and you select the 256 that you want active for your blockchain. That does mean any specific chain will be limited to "only" having 256 contracts. Since there seems to be so few actually useful contracts so far, this limit seems to be sufficient. I am told that the evalcode can be of any length, but the current CC contracts assumes it is one byte.
 
 The simplest CC script would be one that requires a signature from a pubkey along with a CC validation. This is the equivalent of the pay to pubkey bitcoin script and is what most of the initial CC contracts use. Only the channels one needed more than this and it will be explained in its chapter.
 We end up with CC scripts of the form (`evalcode`) + (`pubkey`) + (other stuff), dont worry about the other stuff, it is automatically handled with some handy internal functions. The important thing to note is that each CC contract of this form needs a single pubkey and eval code and from that we get the CC script. Using the standard bitcoin's "hash and make an address from it" method, this means that the same pubkey will generate a different address for each different CC contract!
@@ -236,7 +237,7 @@ Finally, we are ready for the first actual example of a CC contract. The faucet.
 
 The code in [~/komodo/src/cc/faucet.cpp](https://github.com/jl777/komodo/tree/jl777/src/cc/faucet.cpp) is the ultimate documentation for it with all the details, so I will just address the conceptual issues here.
 
-There are only 7 functions in [faucet.cpp](https://github.com/jl777/komodo/tree/jl777/src/cc/faucet.cpp), a bit over 200 lines including comments. The first three are for validation, the last four for the RPC calls to use. 
+There are only 7 functions in [faucet.cpp](https://github.com/jl777/komodo/tree/jl777/src/cc/faucet.cpp), a bit over 200 lines including comments. The first three are for validation, the last four for the RPC calls to use.
 
 ```C
 int64_t IsFaucetvout(struct CCcontract_info *cp,const CTransaction& tx,int32_t v)
@@ -270,7 +271,7 @@ No magic, just simple conversion of a user command line call that runs code insi
 
 `faucetget` allows anybody to get 0.1 coins from the faucet as long as they dont violate the rules.
 
-And we come to what it is all about. The rules of the faucet. Initially it was much less strict and that allowed it to be drained slowly, but automatically and it prevented most from being able to use the faucet. 
+And we come to what it is all about. The rules of the faucet. Initially it was much less strict and that allowed it to be drained slowly, but automatically and it prevented most from being able to use the faucet.
 
 To make it much harder to leech, it was made so each `faucetget` returned only 0.1 coins (down from 1.0) so it was worth 90% less. It was also made so that it had to be to a fresh address with less than 3 transactions. Finally each txid was constrained to start and end with 00! This is a cool trick to force usage of precious CPU time (20 to 60 seconds depending on system) to generate a valid txid. Like PoW mining for the txid and I expect other CC contracts to use a similar mechanism if they want to rate limit usage.
 
@@ -361,7 +362,7 @@ Now we can solve the DEX part of the tokenization, which turns out to be much si
 
 `asks` work by locking assets along with the required price. Partial fills can be supported and the RPC calls can mask the UTXO-ness of the funds/assets needed by automatically gathering the required amount of funds to fill the specific amount.
 
-With calls to cancel the pending `bid` or `ask`, we get a complete set of RPC calls that can support a COIN-centric DEX. 
+With calls to cancel the pending `bid` or `ask`, we get a complete set of RPC calls that can support a COIN-centric DEX.
 
 In the future, it is expected that a token swap RPC can be supported to allow directly swapping one token for another, but at first it is expected that there wont be sufficient volumes for such token to token swaps, so it was left out of the initial implementation.
 
@@ -377,7 +378,7 @@ With just these RPC calls and associated validation, we get the ability to issue
  vout.2: normal output for change (if any)
  vout.n-1: opreturn [EVAL_ASSETS] ['c'] [origpubkey] "<assetname>" "<description>"
 ```
- 
+
 #### transfer
 
 ```C
@@ -387,7 +388,7 @@ With just these RPC calls and associated validation, we get the ability to issue
  vout.n-2: normal output for change (if any)
  vout.n-1: opreturn [EVAL_ASSETS] ['t'] [assetid]
 ```
- 
+
 #### buyoffer:
 
 ```C
@@ -405,7 +406,7 @@ With just these RPC calls and associated validation, we get the ability to issue
  vout.0: vin.1 value to original pubkey buyTx.vout[0].nValue -> [origpubkey]
  vout.1: normal output for change (if any)
  vout.n-1: opreturn [EVAL_ASSETS] ['o'] [assetid]
-``` 
+```
 
 #### fillbuy:
 
@@ -681,13 +682,13 @@ In order to implement this, the following vin/vout contraints are used:
  vout.2: change, if any
  vout.n-1: opreturn with oracletxid, pubkey and price per data point
 ```
- 
+
 ```C
  subscribe:
  vins.*: normal inputs
  vout.0: subscription fee to publishers CC address
  vout.1: change, if any
- vout.n-1: opreturn with oracletxid, registered provider's pubkey, amount
+ vout.n-1: opreturn with oracletxid, registered providers pubkey, amount
 ```
 
 ```C
